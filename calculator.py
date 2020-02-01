@@ -1,103 +1,31 @@
 from tkinter import *
 import tkinter.messagebox as box
+from functools import partial
+
+# Version 2, The Speed and Docs Update
 
 root = Tk()
 
 calculation = ""
-root.geometry("400x450+570+220")
-root.title("Calculator, by Jodhi")
+root.geometry("400x450")
+root.title("Calculator 2.0, by Jodhi")
 root.resizable(False, False)
 root.config(bg="black")
 
+# This widget will show the calculation
 display = Label(root, width=57, height=5)
 
 
+# Updates the display every time the calculation  is done
 def update():
     global calculation
     display.configure(text=calculation)
 
 
-def add_calc1():
+# template command for simple buttons
+def add_char(x):
     global calculation
-    calculation += "1"
-    update()
-
-
-def add_calc2():
-    global calculation
-    calculation += "2"
-    update()
-
-
-def add_calc3():
-    global calculation
-    calculation += "3"
-    update()
-
-
-def add_calc4():
-    global calculation
-    calculation += "4"
-    update()
-
-
-def add_calc5():
-    global calculation
-    calculation += "5"
-    update()
-
-
-def add_calc6():
-    global calculation
-    calculation += "6"
-    update()
-
-
-def add_calc7():
-    global calculation
-    calculation += "7"
-    update()
-
-
-def add_calc8():
-    global calculation
-    calculation += "8"
-    update()
-
-
-def add_calc9():
-    global calculation
-    calculation += "9"
-    update()
-
-
-def add_calc0():
-    global calculation
-    calculation += "0"
-    update()
-
-
-def add():
-    global calculation
-    calculation += "+"
-    update()
-
-
-def minus():
-    global calculation
-    calculation += "-"
-    update()
-
-
-def divide():
-    global calculation
-    calculation += "/"
-    update()
-
-
-def mult():
-    global calculation
-    calculation += "*"
+    calculation += x
     update()
 
 
@@ -105,29 +33,38 @@ def brackets():
     global calculation
     if calculation.count("(") == calculation.count(")") + 1:
         calculation += ")"
-    elif calculation.count(")") == calculation.count("(") + 1:
+    else:
         calculation += "("
     update()
 
 
+# Removes the last character from the display
 def backspace():
     global calculation
     calculation = calculation[:-1]
     update()
 
 
+# Simply clears the calculator display
+def clear():
+    global calculation
+    calculation = ""
+    update()
+
+
 def equal():
     global calculation
     try:
-        if len(calculation) > 57:
-            file = open("result.txt", "a+")
-            calculation = str(eval(calculation))
-            if calculation.endswith(".0"):
-                calculation = calculation[:-2]
-            file.write(calculation + "\n \n")
-            file.close()
+        calculation = str(eval(calculation))
         if calculation.endswith(".0"):
             calculation = calculation[:-2]
+        # if the result is too big for the calculator display, it saves the result in a text file and clears the calculator display
+        if len(calculation) > 57:
+            file = open("result.txt", "a+")
+            file.write(calculation + "\n \n")
+            clear()
+            box.showinfo("Saved Result", "The result of your calculation was saved in 'result.txt' and the calculator display was cleared.")
+            file.close()
         update()
     except ZeroDivisionError:
         box.showerror("Zero Division Error", "Cookie monster.")
@@ -135,55 +72,43 @@ def equal():
         box.showerror("Error", "You did something wrong.")
     except OverflowError:
         box.showerror("Overflow Error", "That's too small man.")
-
-
-def clear():
-    global calculation
-    calculation = ""
-    update()
+    # This error was encountered when doing something like this: 2(3+4)
+    except TypeError:
+        box.showerror("Type Error", "We don't do algebra here.")
 
 
 def dot():
     global calculation
-    if calculation[:-1] == ".":
-        calculation += ""
-    else:
+    if calculation[:-1] != ".":
         calculation += "."
-    update()
-
-
-def xy():
-    global calculation
-    calculation += "**"
-    update()
+        update()
 
 
 buttonFrame = Frame(root)
 
+# The following buttons can be held down
+num1 = Button(buttonFrame, text="1", command=partial(add_char, "1"), fg="white", bg="gray", width=9, height=4, repeatdelay=100, repeatinterval=100)
+num2 = Button(buttonFrame, text="2", command=partial(add_char, "2"), fg="white", bg="gray", width=9, height=4, repeatdelay=100, repeatinterval=100)
+num3 = Button(buttonFrame, text="3", command=partial(add_char, "3"), fg="white", bg="gray", width=9, height=4, repeatdelay=100, repeatinterval=100)
+num4 = Button(buttonFrame, text="4", command=partial(add_char, "4"), fg="white", bg="gray", width=9, height=4, repeatdelay=100, repeatinterval=100)
+num5 = Button(buttonFrame, text="5", command=partial(add_char, "5"), fg="white", bg="gray", width=9, height=4, repeatdelay=100, repeatinterval=100)
+num6 = Button(buttonFrame, text="6", command=partial(add_char, "6"), fg="white", bg="gray", width=9, height=4, repeatdelay=100, repeatinterval=100)
+num7 = Button(buttonFrame, text="7", command=partial(add_char, "7"), fg="white", bg="gray", width=9, height=4, repeatdelay=100, repeatinterval=100)
+num8 = Button(buttonFrame, text="8", command=partial(add_char, "8"), fg="white", bg="gray", width=9, height=4, repeatdelay=100, repeatinterval=100)
+num9 = Button(buttonFrame, text="9", command=partial(add_char, "9"), fg="white", bg="gray", width=9, height=4, repeatdelay=100, repeatinterval=100)
+num0 = Button(buttonFrame, text="0", command=partial(add_char, "0"), fg="white", bg="gray", width=9, height=4, repeatdelay=100, repeatinterval=100)
+back = Button(buttonFrame, text=" <-", command=backspace, fg="black", bg="gray", width=9, height=4, repeatdelay=100, repeatinterval=100)
 
-num1 = Button(buttonFrame, text="1", command=add_calc1, fg="white", bg="gray", width=9, height=4)
-num2 = Button(buttonFrame, text="2", command=add_calc2, fg="white", bg="gray", width=9, height=4)
-num3 = Button(buttonFrame, text="3", command=add_calc3, fg="white", bg="gray", width=9, height=4)
-num4 = Button(buttonFrame, text="4", command=add_calc4, fg="white", bg="gray", width=9, height=4)
-num5 = Button(buttonFrame, text="5", command=add_calc5, fg="white", bg="gray", width=9, height=4)
-num6 = Button(buttonFrame, text="6", command=add_calc6, fg="white", bg="gray", width=9, height=4)
-num7 = Button(buttonFrame, text="7", command=add_calc7, fg="white", bg="gray", width=9, height=4)
-num8 = Button(buttonFrame, text="8", command=add_calc8, fg="white", bg="gray", width=9, height=4)
-num9 = Button(buttonFrame, text="9", command=add_calc9, fg="white", bg="gray", width=9, height=4)
-num0 = Button(buttonFrame, text="0", command=add_calc0, fg="white", bg="gray", width=9, height=4)
-
-add = Button(buttonFrame, text="+", command=add, fg="black", bg="gray", width=9, height=4)
-minus = Button(buttonFrame, text="-", command=minus, fg="black", bg="gray", width=9, height=4)
-divide = Button(buttonFrame, text=" ÷ ", command=divide, fg="black", bg="gray", width=9, height=4)
-mult = Button(buttonFrame, text=" × ", command=mult, fg="black", bg="gray", width=9, height=4)
-back = Button(buttonFrame, text=" <-", command=backspace, fg="black", bg="gray", width=9, height=4)
-
+add = Button(buttonFrame, text="+", command=partial(add_char, "+"), fg="black", bg="gray", width=9, height=4)
+minus = Button(buttonFrame, text="-", command=partial(add_char, "-"), fg="black", bg="gray", width=9, height=4)
+divide = Button(buttonFrame, text=" ÷ ", command=partial(add_char, "/"), fg="black", bg="gray", width=9, height=4)
+mult = Button(buttonFrame, text=" × ", command=partial(add_char, "*"), fg="black", bg="gray", width=9, height=4)
 equals = Button(buttonFrame, text=" = ", fg="black", bg="red", command=equal, width=9, height=4)
 
+xy_button = Button(buttonFrame, text="xª", command=partial(add_char, "**"), fg="black", bg="gray", width=9, height=4)
 brackets_button = Button(buttonFrame, text="()", command=brackets, width=9, height=4, fg="black", bg="gray")
 dot_button = Button(buttonFrame, text=".", command=dot, fg="white", bg="gray", width=9, height=4)
 clear_button = Button(buttonFrame, text="C", command=clear, fg="red", bg="gray", width=9, height=4)
-xy_button = Button(buttonFrame, text="xª", command=xy, fg="black", bg="gray", width=9, height=4)
 
 clear_button.grid(row=1, column=1)
 brackets_button.grid(row=1, column=2)
