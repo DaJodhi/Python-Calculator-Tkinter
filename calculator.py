@@ -1,4 +1,4 @@
-"""A simple calculator made in Tkinter"""
+"""A simple calculator made in Tkinter."""
 from functools import partial
 from tkinter import Label, Tk, Button, Frame, messagebox
 
@@ -16,23 +16,24 @@ DISPLAY = Label(ROOT, width=57, height=5)
 
 
 class Calculator:
-    """A class is used so that we do not have to use a global statement in each function"""
+    """A class is used so that we do not have to use a global statement in each function."""
+
     calculation = ""
 
     @classmethod
     def update(cls):
-        """Updates the calculator display"""
+        """Update the calculator display."""
         DISPLAY.configure(text=cls.calculation)
 
     @classmethod
     def add_char(cls, char):
-        """Template command for simple buttons"""
+        """Template command for simple buttons."""
         cls.calculation += char
         cls.update()
 
     @classmethod
     def brackets(cls):
-        """Adds brackets"""
+        """Add brackets."""
         if cls.calculation.count("(") == cls.calculation.count(")") + 1:
             cls.calculation += ")"
         else:
@@ -41,21 +42,23 @@ class Calculator:
 
     @classmethod
     def backspace(cls):
-        """Removes the last character from the display"""
+        """Remove the last character from the display."""
         cls.calculation = cls.calculation[:-1]
         cls.update()
 
     @classmethod
     def clear(cls):
-        """Clears the calculator display"""
+        """Clear the calculator display."""
         cls.calculation = ""
         cls.update()
 
     @classmethod
     def equal(cls):
-        """Evaluates the answer to the calculation
+        """Evaluate the answer to the calculation.
+
         If the answer is larger than 57 digits, it is saved to a results file
-        Any trailing .0 is removed from simple divisions"""
+        Any trailing .0 is removed from simple divisions
+        """
         try:
             cls.calculation = str(eval(cls.calculation))
             if cls.calculation.endswith(".0"):
@@ -79,7 +82,7 @@ class Calculator:
 
     @classmethod
     def dot(cls):
-        """Adds a decimal point"""
+        """Add a decimal point."""
         if cls.calculation[:-1] != ".":
             cls.calculation += "."
             cls.update()
