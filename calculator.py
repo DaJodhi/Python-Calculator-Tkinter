@@ -1,13 +1,14 @@
 """A simple calculator made in Tkinter."""
 from functools import partial
 from tkinter import Label, Tk, Button, Frame, messagebox
+from pyperclip import copy, paste
 
-# Version 2.1, The Speed and Docs Update
+# Version 2.2, The Keyboard and Class Update
 
 ROOT = Tk()
 
 ROOT.geometry("400x450")
-ROOT.title("Calculator 2.0, by Jodhi")
+ROOT.title("Calculator 2.3, by Jodhi")
 ROOT.resizable(False, False)
 ROOT.config(bg="black")
 
@@ -26,13 +27,13 @@ class Calculator:
         DISPLAY.configure(text=cls.calculation)
 
     @classmethod
-    def add_char(cls, char):
+    def add_char(cls, char, empty=None):
         """Template command for simple buttons."""
         cls.calculation += char
         cls.update()
 
     @classmethod
-    def brackets(cls):
+    def brackets(cls, empty=None):
         """Add brackets."""
         if cls.calculation.count("(") == cls.calculation.count(")") + 1:
             cls.calculation += ")"
@@ -41,25 +42,27 @@ class Calculator:
         cls.update()
 
     @classmethod
-    def backspace(cls):
+    def backspace(cls, empty=None):
         """Remove the last character from the display."""
         cls.calculation = cls.calculation[:-1]
         cls.update()
 
     @classmethod
-    def clear(cls):
+    def clear(cls, empty=None):
         """Clear the calculator display."""
         cls.calculation = ""
         cls.update()
 
     @classmethod
-    def equal(cls):
+    def equal(cls, empty=None):
         """Evaluate the answer to the calculation.
 
         If the answer is larger than 57 digits, it is saved to a results file
         Any trailing .0 is removed from simple divisions
         """
         try:
+            if cls.calculation == "":
+                return
             cls.calculation = str(eval(cls.calculation))
             if cls.calculation.endswith(".0"):
                 cls.calculation = cls.calculation[:-2]
@@ -81,38 +84,55 @@ class Calculator:
             messagebox.showerror("Type Error", "We don't do algebra here.")
 
     @classmethod
-    def dot(cls):
+    def dot(cls, empty=None):
         """Add a decimal point."""
         if cls.calculation[:-1] != ".":
             cls.calculation += "."
             cls.update()
+
+    @classmethod
+    def cpy(cls, empty=None):
+        """Copy the current value to the clipboard."""
+        copy(cls.calculation)
+
+    @classmethod
+    def pst(cls, empty=None):
+        """Paste the clipboard to the display."""
+        for dig in paste():
+            if dig not in ["1", "2", "3", "4", "5", "6", "7", "8",
+                           "9", "0", "/", "(", ")", "*", ".", "-", "+"]:
+                messagebox.showerror("Clipboard Error",
+                                     "The clipboard does not only contain numbers.")
+                return
+        cls.calculation += paste()
+        cls.update()
 
 
 BUTTON_FRAME = Frame(ROOT)
 
 # The following buttons can be held down
 NUM1 = Button(BUTTON_FRAME, text="1", command=partial(Calculator.add_char, "1"), fg="white",
-              bg="gray", width=9, height=4, repeatdelay=100, repeatinterval=100)
+              bg="gray", width=9, height=4, repeatdelay=150, repeatinterval=150)
 NUM2 = Button(BUTTON_FRAME, text="2", command=partial(Calculator.add_char, "2"), fg="white",
-              bg="gray", width=9, height=4, repeatdelay=100, repeatinterval=100)
+              bg="gray", width=9, height=4, repeatdelay=150, repeatinterval=150)
 NUM3 = Button(BUTTON_FRAME, text="3", command=partial(Calculator.add_char, "3"), fg="white",
-              bg="gray", width=9, height=4, repeatdelay=100, repeatinterval=100)
+              bg="gray", width=9, height=4, repeatdelay=150, repeatinterval=150)
 NUM4 = Button(BUTTON_FRAME, text="4", command=partial(Calculator.add_char, "4"), fg="white",
-              bg="gray", width=9, height=4, repeatdelay=100, repeatinterval=100)
+              bg="gray", width=9, height=4, repeatdelay=150, repeatinterval=150)
 NUM5 = Button(BUTTON_FRAME, text="5", command=partial(Calculator.add_char, "5"), fg="white",
-              bg="gray", width=9, height=4, repeatdelay=100, repeatinterval=100)
+              bg="gray", width=9, height=4, repeatdelay=150, repeatinterval=150)
 NUM6 = Button(BUTTON_FRAME, text="6", command=partial(Calculator.add_char, "6"), fg="white",
-              bg="gray", width=9, height=4, repeatdelay=100, repeatinterval=100)
+              bg="gray", width=9, height=4, repeatdelay=150, repeatinterval=150)
 NUM7 = Button(BUTTON_FRAME, text="7", command=partial(Calculator.add_char, "7"), fg="white",
-              bg="gray", width=9, height=4, repeatdelay=100, repeatinterval=100)
+              bg="gray", width=9, height=4, repeatdelay=150, repeatinterval=150)
 NUM8 = Button(BUTTON_FRAME, text="8", command=partial(Calculator.add_char, "8"), fg="white",
-              bg="gray", width=9, height=4, repeatdelay=100, repeatinterval=100)
+              bg="gray", width=9, height=4, repeatdelay=150, repeatinterval=150)
 NUM9 = Button(BUTTON_FRAME, text="9", command=partial(Calculator.add_char, "9"), fg="white",
-              bg="gray", width=9, height=4, repeatdelay=100, repeatinterval=100)
+              bg="gray", width=9, height=4, repeatdelay=150, repeatinterval=150)
 NUM0 = Button(BUTTON_FRAME, text="0", command=partial(Calculator.add_char, "0"), fg="white",
-              bg="gray", width=9, height=4, repeatdelay=100, repeatinterval=100)
+              bg="gray", width=9, height=4, repeatdelay=150, repeatinterval=150)
 BACK = Button(BUTTON_FRAME, text=" <-", command=Calculator.backspace, fg="black", bg="gray",
-              width=9, height=4, repeatdelay=100, repeatinterval=100)
+              width=9, height=4, repeatdelay=200, repeatinterval=200)
 
 ADD = Button(BUTTON_FRAME, text="+", command=partial(Calculator.add_char, "+"), fg="black",
              bg="gray", width=9, height=4)
@@ -157,5 +177,34 @@ EQUALS.grid(row=5, column=4)
 
 DISPLAY.pack()
 BUTTON_FRAME.pack()
+
+# Shortcuts
+ROOT.bind("1", partial(Calculator.add_char, "1"))
+ROOT.bind("2", partial(Calculator.add_char, "2"))
+ROOT.bind("3", partial(Calculator.add_char, "3"))
+ROOT.bind("4", partial(Calculator.add_char, "4"))
+ROOT.bind("5", partial(Calculator.add_char, "5"))
+ROOT.bind("6", partial(Calculator.add_char, "6"))
+ROOT.bind("7", partial(Calculator.add_char, "7"))
+ROOT.bind("8", partial(Calculator.add_char, "8"))
+ROOT.bind("9", partial(Calculator.add_char, "9"))
+ROOT.bind("0", partial(Calculator.add_char, "0"))
+
+ROOT.bind("+", partial(Calculator.add_char, "+"))
+ROOT.bind("-", partial(Calculator.add_char, "-"))
+ROOT.bind("*", partial(Calculator.add_char, "*"))
+ROOT.bind("x", partial(Calculator.add_char, "*"))
+ROOT.bind("/", partial(Calculator.add_char, "/"))
+ROOT.bind(".", Calculator.dot)
+
+ROOT.bind("<Control-v>", Calculator.pst)
+ROOT.bind("<Control-c>", Calculator.cpy)
+ROOT.bind("<BackSpace>", Calculator.backspace)
+ROOT.bind("c", Calculator.clear)
+ROOT.bind("<Return>", Calculator.equal)
+ROOT.bind("=", Calculator.equal)
+
+ROOT.bind("(", Calculator.brackets)
+ROOT.bind(")", Calculator.brackets)
 
 ROOT.mainloop()
