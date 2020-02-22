@@ -8,7 +8,7 @@ from pyperclip import copy, paste
 ROOT = Tk()
 
 ROOT.geometry("400x450")
-ROOT.title("Calculator 2.3, by Jodhi")
+ROOT.title("Calculator 2.2, by Jodhi")
 ROOT.resizable(False, False)
 ROOT.config(bg="black")
 
